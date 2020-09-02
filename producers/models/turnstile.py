@@ -18,6 +18,8 @@ class Turnstile(Producer):
        f"{Path(__file__).parents[0]}/schemas/turnstile_value.json"
     )
 
+    TOPIC_NAME = "turnstile.entries"
+
     def __init__(self, station):
         """Create the Turnstile"""
         station_name = (
@@ -28,7 +30,7 @@ class Turnstile(Producer):
             .replace("'", "")
         )
 
-        self.topic_name = "turnstile.entries"
+        self.topic_name = Turnstile.topic_name
         super().__init__(
             self.topic_name,
             key_schema   = Turnstile.key_schema,

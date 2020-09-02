@@ -19,6 +19,8 @@ logger = logging.getLogger(__name__)
 class Weather(Producer):
     """Defines a simulated weather model"""
 
+    TOPIC_NAME = "weather_readings"
+
     status = IntEnum(
         "status", "sunny partly_cloudy cloudy windy precipitation", start=0
     )
@@ -33,7 +35,7 @@ class Weather(Producer):
 
     def __init__(self, month):
         super().__init__(
-            "weather_readings",
+            Weather.TOPIC_NAME,
             key_schema   = Weather.key_schema,
             value_schema = Weather.value_schema
         )
@@ -68,7 +70,7 @@ class Weather(Producer):
         self._set_weather(month)
 
         resp = requests.post(
-           f"{Weather.rest_proxy_url}/topics/weather_readings",
+           f"{Weather.rest_proxy_url}/topics/{Weather.topic_name}",
            headers = {
             "Content-Type": "application/vnd.kafka.json.v1+json",
             "Accept": "application/vnd.kafka.v1+json, application/vnd.kafka+json, application/json"
