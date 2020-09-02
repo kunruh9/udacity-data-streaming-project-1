@@ -70,7 +70,7 @@ class Weather(Producer):
         self._set_weather(month)
 
         resp = requests.post(
-           f"{Weather.rest_proxy_url}/topics/{Weather.topic_name}",
+           f"{Weather.rest_proxy_url}/topics/{Weather.TOPIC_NAME}",
            headers = {
             "Content-Type": "application/vnd.kafka.json.v1+json",
             "Accept": "application/vnd.kafka.v1+json, application/vnd.kafka+json, application/json"

@@ -30,7 +30,7 @@ class Turnstile(Producer):
             .replace("'", "")
         )
 
-        self.topic_name = Turnstile.topic_name
+        self.topic_name = Turnstile.TOPIC_NAME
         super().__init__(
             self.topic_name,
             key_schema   = Turnstile.key_schema,
