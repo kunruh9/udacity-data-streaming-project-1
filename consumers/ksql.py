@@ -1,30 +1,28 @@
 """Configures KSQL to combine station and turnstile data"""
 import json
 import logging
-
 import requests
-
 import topic_check
-
+import topic_names as TOPIC
 
 logger = logging.getLogger(__name__)
 
 
 KSQL_URL = "http://localhost:8088"
 
-KSQL_STATEMENT = """
+KSQL_STATEMENT = f"""
 CREATE TABLE turnstile_entries (
     timestamp VARCHAR,
     station_id INT,
     station_name VARCHAR,
     line INT
 ) WITH (
-    KAFKA_TOPIC='turnstile.entries',
+    KAFKA_TOPIC='{TOPIC.TURNSTILE_ENTRIES}',
     VALUE_FORMAT='AVRO',
     KEY='timestamp'
 );
 
-CREATE TABLE turnstile_summary
+CREATE TABLE f{TOPIC.TURNSTILE_SUMMARY}
 WITH (
     VALUE_FORMAT='JSON'
 ) AS
@@ -36,7 +34,7 @@ WITH (
 
 def execute_statement():
     """Executes the KSQL statement against the KSQL API"""
-    if topic_check.topic_exists("TURNSTILE_SUMMARY") is True:
+    if topic_check.topic_exists(TOPIC.TURNSTILE_SUMMARY) is True:
         return
 
     logging.info("executing ksql statement...")
