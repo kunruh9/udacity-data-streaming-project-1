@@ -70,7 +70,7 @@ class Line:
             self._handle_arrival(message)
         elif topic == TOPIC.TURNSTILE_SUMMARY:
             json_data = json.loads(message.value())
-            station_id = message.key().decode('utf-8')
+            station_id = int(message.key().decode('utf-8'))
             station = self.stations.get(station_id)
             if station is None:
                 logger.debug("TURNSTILE_SUMMARY: unable to handle message due to missing station")
