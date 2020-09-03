@@ -2,6 +2,7 @@
 import json
 import logging
 import re
+import pdb
 
 from models import Line
 import topic_names as TOPIC
@@ -28,11 +29,13 @@ class Lines:
             if message.topic() == TOPIC.TRANSFORMED_STATIONS:
                 value = json.loads(value)
 
-            if line_colors[value["line"]] == "green":
+            line_color = self.decode_color(value['line'])
+
+            if line_color == "green":
                 self.green_line.process_message(message)
-            elif line_colors[value["line"]] == "red":
+            elif line_color == "red":
                 self.red_line.process_message(message)
-            elif line_colors[value["line"]] == "blue":
+            elif line_color == "blue":
                 self.blue_line.process_message(message)
             else:
                 logger.debug("discarding unknown line msg %s", value["line"])
@@ -42,3 +45,9 @@ class Lines:
             self.blue_line.process_message(message)
         else:
             logger.info("ignoring non-lines message %s", message.topic())
+
+    def decode_color(self, color):
+        if isinstance(color, int):
+            return line_colors[color]
+        else:
+            return color

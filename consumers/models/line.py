@@ -2,9 +2,10 @@
 import json
 import logging
 import re
+import pdb
 
 from models import Station
-
+import topic_names as TOPIC
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ class Line:
 
     def _handle_arrival(self, message):
         """Updates train locations"""
+        logger.debug("in handle_arrival")
         value = message.value()
         prev_station_id = value.get("prev_station_id")
         prev_dir = value.get("prev_direction")
@@ -40,7 +42,7 @@ class Line:
             if prev_station is not None:
                 prev_station.handle_departure(prev_dir)
             else:
-                logger.debug("unable to handle previous station due to missing station")
+                logger.debug("IDKIDC unable to handle previous station due to missing station")
         else:
             logger.debug(
                 "unable to handle previous station due to missing previous info"
@@ -49,7 +51,7 @@ class Line:
         station_id = value.get("station_id")
         station = self.stations.get(station_id)
         if station is None:
-            logger.debug("unable to handle message due to missing station")
+            logger.debug("HANDLE ARRIVAL unable to handle message due to missing station")
             return
         station.handle_arrival(
             value.get("direction"), value.get("train_id"), value.get("train_status")
@@ -58,7 +60,7 @@ class Line:
     def process_message(self, message):
         """Given a kafka message, extract data"""
         topic = message.topic()
-        if topic == "chicago.stations.transformed":
+        if topic == TOPIC.TRANSFORMED_STATIONS:
             try:
                 value = json.loads(message.value())
                 self._handle_station(value)
@@ -66,12 +68,12 @@ class Line:
                 logger.fatal("bad station? %s, %s", value, e)
         elif re.search("arrivals", topic):
             self._handle_arrival(message)
-        elif topic == "TURNSTILE_SUMMARY":
+        elif topic == TOPIC.TURNSTILE_SUMMARY:
             json_data = json.loads(message.value())
-            station_id = json_data.get("STATION_ID")
+            station_id = message.key().decode('utf-8')
             station = self.stations.get(station_id)
             if station is None:
-                logger.debug("unable to handle message due to missing station")
+                logger.debug("TURNSTILE_SUMMARY: unable to handle message due to missing station")
                 return
             station.process_message(json_data)
         else:
