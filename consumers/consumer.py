@@ -1,5 +1,7 @@
 """Defines core consumer functionality"""
 import logging
+import sys
+import pdb
 
 import confluent_kafka
 from confluent_kafka import Consumer
@@ -50,8 +52,8 @@ class KafkaConsumer:
     def on_assign(self, consumer, partitions):
         """Callback for when topic assignment takes place"""
         for partition in partitions:
-            if self.offset_earliest:
-                partition.offset = OFFSET_BEGINNING
+            if self.offset_earliest is True:
+                partition.offset = confluent_kafka.OFFSET_BEGINNING
 
         logger.info("partitions assigned for %s", self.topic_name_pattern)
         consumer.assign(partitions)
