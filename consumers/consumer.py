@@ -68,14 +68,17 @@ class KafkaConsumer:
 
     def _consume(self):
         """Polls for a message. Returns 1 if a message was received, 0 otherwise"""
-        messages = self.consumer.consume(50, self.consume_timeout)
-        for message in messages:
+        message = self.consumer.poll(self.consume_timeout)
+        retval = 0
+
+        if message is not None:
             if message.error() is not None:
                 logger.error(f"error from consumer {message.error()}")
             else:
                 self.message_handler(message)
+                retval = 1
 
-        return len(messages)
+        return retval
 
 
     def close(self):
