@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 class Station:
     """Defines the Station Model"""
 
+    statuses = ['out_of_service', 'in_service', 'broken_down']
+
     def __init__(self, station_id, station_name, order):
         """Creates a Station Model"""
         self.station_id = station_id
@@ -32,7 +34,7 @@ class Station:
 
     def handle_arrival(self, direction, train_id, train_status):
         """Unpacks arrival data"""
-        status_dict = {"train_id": train_id, "status": train_status.replace("_", " ")}
+        status_dict = {"train_id": train_id, "status": self.decode_status(train_status).replace("_", " ")}
         if direction == "a":
             self.dir_a = status_dict
         else:
@@ -41,3 +43,9 @@ class Station:
     def process_message(self, json_data):
         """Handles arrival and turnstile messages"""
         self.num_turnstile_entries = json_data["COUNT"]
+
+    def decode_status(self, status):
+        if isinstance(status, int):
+            return self.statuses[status]
+        else:
+            return status

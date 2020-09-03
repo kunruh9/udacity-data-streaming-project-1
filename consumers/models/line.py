@@ -2,7 +2,6 @@
 import json
 import logging
 import re
-import pdb
 
 from models import Station
 import topic_names as TOPIC
@@ -66,7 +65,7 @@ class Line:
                 self._handle_station(value)
             except Exception as e:
                 logger.fatal("bad station? %s, %s", value, e)
-        elif re.search("arrivals", topic):
+        elif 'arrivals' in topic:
             self._handle_arrival(message)
         elif topic == TOPIC.TURNSTILE_SUMMARY:
             json_data = json.loads(message.value())

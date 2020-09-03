@@ -87,7 +87,6 @@ def run_server():
             "turnstile_summary_group",
             TOPIC.TURNSTILE_SUMMARY,
             lines.process_message,
-            offset_earliest=True,
             is_avro=False,
         ),
     ]

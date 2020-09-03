@@ -1,6 +1,4 @@
 """Methods pertaining to weather data"""
-import pdb
-
 from enum import IntEnum
 import json
 import logging
@@ -72,7 +70,7 @@ class Weather(Producer):
         resp = requests.post(
            f"{Weather.rest_proxy_url}/topics/{Weather.TOPIC_NAME}",
            headers = {
-            "Content-Type": "application/vnd.kafka.json.v1+json",
+            "Content-Type": "application/vnd.kafka.avro.v1+json",
             "Accept": "application/vnd.kafka.v1+json, application/vnd.kafka+json, application/json"
            },
            data = json.dumps(
@@ -81,7 +79,7 @@ class Weather(Producer):
                    "key_schema": json.dumps(Weather.key_schema),
                    "records": [
                         {
-                            "key": self.time_millis(),
+                            "key": { "timestamp": self.time_millis() },
                             "value": {
                                 "temperature": self.temp,
                                 "status": int(self.status)

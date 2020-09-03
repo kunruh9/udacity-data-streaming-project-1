@@ -2,7 +2,6 @@
 import json
 import logging
 import re
-import pdb
 
 from models import Line
 import topic_names as TOPIC
@@ -48,6 +47,6 @@ class Lines:
 
     def decode_color(self, color):
         if isinstance(color, int):
-            return line_colors[color]
+            return self.line_colors[color]
         else:
             return color

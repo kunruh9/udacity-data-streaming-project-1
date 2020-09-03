@@ -1,7 +1,6 @@
 """Defines core consumer functionality"""
 import logging
 import sys
-import pdb
 
 import confluent_kafka
 from confluent_kafka import Consumer
